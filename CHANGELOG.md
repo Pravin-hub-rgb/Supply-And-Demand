@@ -2,6 +2,18 @@
 
 All notable user-visible changes are recorded here.
 
+## 0.6.0 - 2026-11-03
+
+- Added a top-left OHLCV overlay to the chart, updated from candle hover and defaulting to the latest candle.
+
+## 0.5.0 - 2026-11-03
+
+- Fixed the phase 1 chart resetting/shifting when changing timeframes or instruments. The chart is now mounted once; it keeps per symbol+timeframe visible logical-range memory, restores it when switching, and falls back to the last-used range for unseen symbols/timeframes.
+
+## 0.4.1 - 2026-11-03
+
+- Fixed `/api/candles/{symbol}?timeframe=D|W` returning HTTP 500 because the native daily/weekly timeframes were not passed through by the candle aggregator.
+
 ## 0.4.0 - 2026-11-03
 
 - Added a root `bun dev` launcher that starts the backend API and frontend together.

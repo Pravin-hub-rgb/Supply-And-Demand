@@ -85,4 +85,4 @@ bun run build
 Set-Location ..
 ```
 
-Last verified: backend suite 20 passed; frontend production build succeeded; `bun run check` reported both ports available. Browser chart checks for D/W/M/Q/HY/Y are still pending.
+Last verified: backend suite 21 passed; frontend production build succeeded after chart persistence and OHLCV overlay changes; `bun run check` reported both ports available. Browser chart checks for D/W/M/Q/HY/Y, instrument/timeframe persistence, and OHLCV hover are still pending manual confirmation.

@@ -171,12 +171,52 @@ input {
   padding: 14px;
 }
 
+.chart-shell {
+  position: relative;
+  height: 100%;
+  min-height: 0;
+}
+
 .chart-panel {
   height: 100%;
   border: 1px solid var(--border);
   border-radius: 10px;
   background: #0d1117;
   overflow: hidden;
+}
+
+.ohlcv-overlay {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  z-index: 10;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: rgba(13, 17, 23, 0.82);
+  pointer-events: none;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 11px;
+  line-height: 16px;
+}
+
+.ohlcv-overlay span {
+  color: var(--text);
+}
+
+.ohlcv-h {
+  color: var(--up) !important;
+}
+
+.ohlcv-l {
+  color: var(--down) !important;
+}
+
+.ohlcv-v {
+  color: var(--muted) !important;
 }
 
 .state-box {

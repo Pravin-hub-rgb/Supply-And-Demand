@@ -36,7 +36,8 @@ SupplynDemand is a local single-user study app for Nifty 50 supply and demand.
 - `supplyndemand.downloader` orchestrates seeded downloads and reports failures.
 - `supplyndemand.api` exposes local HTTP routes; business logic stays in modules.
 - `frontend/src/lib/api.ts` is the browser API client with timeout-free fetch and explicit API errors.
-- `frontend/src/components/CandleChart.tsx` owns chart creation/removal and resize handling.
+- `frontend/src/components/CandleChart.tsx` owns chart creation/removal, resize handling, session-visible logical-range restore, and the OHLCV hover overlay.
+- `frontend/src/lib/chartMemory.ts` stores per symbol+timeframe visible logical ranges plus a last-used fallback in page session state.
 - `frontend/src/components/StockSidebar.tsx` and `TimeframeSwitch.tsx` own list and timeframe UI.
 - Frontend renders UI and does not compute market data.
 

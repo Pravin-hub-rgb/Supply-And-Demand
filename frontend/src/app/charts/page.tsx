@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import CandleChart from "../../components/CandleChart";
 import StockSidebar from "../../components/StockSidebar";
 import TimeframeSwitch from "../../components/TimeframeSwitch";
-import { ApiError, getCandles, getInstruments } from "../../lib/api";
+import { createChartMemory } from "../../lib/chartMemory";
+import { getCandles, getInstruments } from "../../lib/api";
 import type { CandlesResponse, Instrument, Timeframe } from "../../lib/types";
 
 export default function ChartsPage() {
@@ -17,6 +18,7 @@ export default function ChartsPage() {
   const [candlesError, setCandlesError] = useState<string | null>(null);
   const [candlesLoading, setCandlesLoading] = useState(false);
   const [reloadTick, setReloadTick] = useState(0);
+  const chartMemoryRef = useRef(createChartMemory());
 
   const selected = useMemo(
     () => instruments.find((instrument) => instrument.symbol === selectedSymbol) ?? null,
@@ -109,7 +111,9 @@ export default function ChartsPage() {
             </div>
           ) : null}
           {!candlesLoading && !candlesError && candlesResponse?.empty ? <div className="state-box">No candles for {selectedSymbol} on {timeframe}.</div> : null}
-          {!candlesError && candlesResponse && !candlesResponse.empty ? <CandleChart candles={candlesResponse.candles} /> : null}
+          {!candlesError && candlesResponse && !candlesResponse.empty && selectedSymbol ? (
+            <CandleChart candles={candlesResponse.candles} timeframe={timeframe} symbol={selectedSymbol} memory={chartMemoryRef.current} />
+          ) : null}
         </section>
       </section>
     </main>
