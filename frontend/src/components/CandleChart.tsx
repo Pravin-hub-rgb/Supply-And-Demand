@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   CandlestickSeries,
   ColorType,
@@ -99,8 +99,8 @@ export default function CandleChart({ candles, timeframe, symbol, memory, zones,
         textColor: "#8b98ab",
       },
       grid: {
-        vertLines: { color: "#1f2a3d" },
-        horzLines: { color: "#1f2a3d" },
+        vertLines: { visible: false },
+        horzLines: { visible: false },
       },
       crosshair: { mode: CrosshairMode.Normal },
       rightPriceScale: { borderColor: "#1f2a3d" },
@@ -108,12 +108,12 @@ export default function CandleChart({ candles, timeframe, symbol, memory, zones,
     });
     chartRef.current = chart;
     const series = chart.addSeries(CandlestickSeries, {
-      upColor: "#26a69a",
-      downColor: "#ef5350",
-      borderUpColor: "#26a69a",
-      borderDownColor: "#ef5350",
-      wickUpColor: "#26a69a",
-      wickDownColor: "#ef5350",
+      upColor: "#ffffff",
+      downColor: "#000000",
+      borderUpColor: "#ffffff",
+      borderDownColor: "#ffffff",
+      wickUpColor: "#ffffff",
+      wickDownColor: "#ffffff",
     });
     seriesRef.current = series;
 
@@ -148,9 +148,17 @@ export default function CandleChart({ candles, timeframe, symbol, memory, zones,
     };
   }, []);
 
+  const snappedZones = useMemo(() => {
+    if (!zones || zones.length === 0 || candles.length === 0) return zones ?? [];
+    return zones.map((zone) => {
+      const candle = candles.find((item) => item.time >= zone.startTime);
+      return candle ? { ...zone, startTime: candle.time } : zone;
+    });
+  }, [zones, candles]);
+
   useEffect(() => {
-    zonePrimitiveRef.current?.setZones(zones ?? []);
-  }, [zones]);
+    zonePrimitiveRef.current?.setZones(snappedZones);
+  }, [snappedZones]);
 
   useEffect(() => {
     if (!markersPluginRef.current) return;

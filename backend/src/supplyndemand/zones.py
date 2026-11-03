@@ -12,8 +12,8 @@ from typing import Any
 
 from .candles import Candle
 
-STRONG_BODY_TO_RANGE = 0.45
-BASE_BODY_TO_RANGE = 0.45
+STRONG_BODY_TO_RANGE = 0.4
+BASE_BODY_TO_RANGE = 0.4
 STRONG_AVERAGE_MULTIPLE = 1.5
 AVERAGE_BODY_WINDOW = 20
 MAX_BASE_CANDLES = 7
@@ -86,22 +86,23 @@ class DetectedZone:
         }
 
 
-def detect_zones(candles: list[Candle]) -> list[DetectedZone]:
+def detect_zones(candles: list[Candle], exclude_last: bool = False) -> list[DetectedZone]:
     """Return all fresh zones found in the supplied ascending candle list."""
-    if len(candles) < 3:
+    working = candles[:-1] if exclude_last and len(candles) > 2 else candles
+    if len(working) < 3:
         return []
-    bodies = [_body(candle) for candle in candles]
+    bodies = [_body(candle) for candle in working]
     averages = _average_bodies(bodies)
-    ranges = [_range(candle) for candle in candles]
-    true_ranges = [_true_range(candles, index) for index in range(len(candles))]
+    ranges = [_range(candle) for candle in working]
+    true_ranges = [_true_range(working, index) for index in range(len(working))]
     atrs = [_atr(true_ranges, index) for index in range(len(true_ranges))]
     strengths = [
-        _candle_strength(candles[index], bodies[index], averages[index], true_ranges[index], atrs[index])
-        for index in range(len(candles))
+        _candle_strength(working[index], bodies[index], averages[index], true_ranges[index], atrs[index])
+        for index in range(len(working))
     ]
     zones: list[DetectedZone] = []
-    for i in range(len(candles) - 2):
-        zones.extend(_zones_from_initial(candles, i, strengths, atrs, true_ranges))
+    for i in range(len(working) - 2):
+        zones.extend(_zones_from_initial(working, i, strengths, atrs, true_ranges))
     return zones
 
 
@@ -143,12 +144,9 @@ def _candle_strength(candle: Candle, body: float, average_body: float, true_rang
     candle_range = _range(candle)
     if candle_range <= 0 or true_range <= 0:
         return False, 0
-    meets_body_average = body >= 1.2 * average_body if average_body > 0 else True
     body_to_range = body / candle_range
-    size_strong = body_to_range >= 0.4 and (true_range >= 1.5 * atr if atr > 0 else True)
-    ratio_strong = body_to_range >= 0.5 and meets_body_average and (true_range >= atr if atr == true_range else true_range >= 1.2 * atr)
-    high_ratio_strong = body_to_range >= 0.85
-    if not (size_strong or ratio_strong or high_ratio_strong):
+    meets_size = (true_range >= 0.8 * atr if atr > 0 else True) or (body >= 0.8 * average_body if average_body > 0 else True)
+    if body_to_range < 0.4 or not meets_size:
         return False, 0
     if candle.close > candle.open:
         return True, 1

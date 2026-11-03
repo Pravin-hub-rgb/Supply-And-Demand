@@ -45,6 +45,7 @@ def seed_rbr_pattern(settings):
         add_year(conn, key, 2020, 100, 114, 98, 112)
         add_year(conn, key, 2021, 108, 115, 104, 112)
         add_year(conn, key, 2022, 112, 130, 110, 126)
+        add_year(conn, key, 2023, 126, 128, 124, 127)
 
 
 def seed_empty(settings):

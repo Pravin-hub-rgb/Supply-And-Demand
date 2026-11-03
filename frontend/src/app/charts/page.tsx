@@ -112,23 +112,26 @@ export default function ChartsPage() {
     }
     let cancelled = false;
     const timeframes: Timeframe[] = ["Y", "HY", "Q", "M", "W", "D"];
-    Promise.all(
+    Promise.allSettled(
       timeframes.map(async (tf) => {
         const data = await getZones(selectedSymbol, tf);
         return [tf, data.zones.map((zone) => ({ ...zone, sourceTimeframe: tf }))] as const;
       }),
-    )
-      .then((results) => {
-        if (cancelled) return;
-        const next: Partial<Record<Timeframe, ChartZone[]>> = {};
-        for (const [tf, zones] of results) next[tf] = zones;
-        setZonesByTimeframe(next);
-      })
-      .catch((error: unknown) => {
-        if (cancelled) return;
-        setZonesByTimeframe({});
-        setZonesError(error instanceof Error ? error.message : String(error));
-      });
+    ).then((results) => {
+      if (cancelled) return;
+      const next: Partial<Record<Timeframe, ChartZone[]>> = {};
+      let hadError = false;
+      for (const result of results) {
+        if (result.status === "fulfilled") {
+          const [tf, zones] = result.value;
+          next[tf] = zones;
+        } else {
+          hadError = true;
+        }
+      }
+      setZonesByTimeframe(next);
+      setZonesError(hadError ? "Some timeframe zones failed to load" : null);
+    });
     return () => {
       cancelled = true;
     };
@@ -183,7 +186,7 @@ export default function ChartsPage() {
         <header className="topbar">
           <div className="title-block">
             <h2>{selected?.symbol ?? "Select a stock"}</h2>
-            <p>{selected?.name ?? (instrumentsLoading ? "Loading Nifty 50…" : "")}</p>
+            <p>{selected?.name ?? (instrumentsLoading ? "Loading Nifty 50…" : "")} · {displayedZones.length} zones</p>
           </div>
           <TimeframeSwitch value={timeframe} onChange={setTimeframe} />
         </header>

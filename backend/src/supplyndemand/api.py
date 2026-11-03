@@ -88,7 +88,7 @@ def zones(
         native_timeframe = "M" if normalized in {"Q", "HY", "Y"} else normalized
         rows = fetch_candles(conn, instrument["instrument_key"], native_timeframe)
     derived_rows = aggregate_to_timeframe(rows, normalized)
-    detected = detect_zones(derived_rows)
+    detected = detect_zones(derived_rows, exclude_last=True)
     selected = select_nearest(detected, derived_rows[-1].close) if derived_rows else []
     return {
         "symbol": instrument["symbol"],

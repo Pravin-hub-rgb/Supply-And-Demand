@@ -13,6 +13,36 @@ function toBusinessDay(time: string) {
   return { year, month, day };
 }
 
+function zoneColors(zone: ChartZone): { fill: string; stroke: string } {
+  const demand = zone.type === "demand";
+  switch (zone.sourceTimeframe) {
+    case "Y":
+      return { fill: "rgba(0, 188, 212, 0.8)", stroke: "#e53935" };
+    case "HY":
+      return { fill: "rgba(74, 20, 140, 0.8)", stroke: "#e53935" };
+    case "Q":
+      return demand
+        ? { fill: "rgba(27, 94, 32, 0.8)", stroke: "#e53935" }
+        : { fill: "rgba(13, 71, 161, 0.8)", stroke: "#e53935" };
+    case "M":
+      return demand
+        ? { fill: "rgba(251, 192, 45, 0.8)", stroke: "#e53935" }
+        : { fill: "rgba(239, 108, 0, 0.8)", stroke: "#e53935" };
+    case "W":
+      return demand
+        ? { fill: "rgba(0, 230, 118, 0.8)", stroke: "#e53935" }
+        : { fill: "rgba(229, 57, 53, 0.8)", stroke: "#e53935" };
+    case "D":
+      return demand
+        ? { fill: "rgba(255, 182, 193, 0.8)", stroke: "#e53935" }
+        : { fill: "rgba(117, 117, 117, 0.8)", stroke: "#e53935" };
+    default:
+      return demand
+        ? { fill: "rgba(38, 166, 154, 0.8)", stroke: "#e53935" }
+        : { fill: "rgba(239, 83, 80, 0.8)", stroke: "#e53935" };
+  }
+}
+
 class ZoneRenderer implements IPrimitivePaneRenderer {
   private zones: ChartZone[] = [];
   private chart?: IChartApi;
@@ -33,7 +63,9 @@ class ZoneRenderer implements IPrimitivePaneRenderer {
     if (!chart || !series || this.zones.length === 0) return;
     target.useMediaCoordinateSpace(({ context }) => {
       for (const zone of this.zones) {
-        const x1 = chart.timeScale().timeToCoordinate(toBusinessDay(zone.startTime) as unknown as Time);
+        const x1Raw = chart.timeScale().timeToCoordinate(toBusinessDay(zone.startTime) as unknown as Time);
+        if (x1Raw === null) continue;
+        const x1 = x1Raw;
         const x2 = chart.timeScale().width();
         const yTop = series.priceToCoordinate(zone.top);
         const yBottom = series.priceToCoordinate(zone.bottom);
@@ -43,15 +75,15 @@ class ZoneRenderer implements IPrimitivePaneRenderer {
         const bottom = Math.max(yTop, yBottom);
         const width = Math.max(1, x2 - left);
         const height = Math.max(1, bottom - top);
-        const isDemand = zone.type === "demand";
-        context.fillStyle = isDemand ? "rgba(38, 166, 154, 0.14)" : "rgba(239, 83, 80, 0.14)";
+        const colors = zoneColors(zone);
+        context.save();
+        context.globalAlpha = 1;
+        context.fillStyle = colors.fill;
         context.fillRect(left, top, width, height);
-        context.strokeStyle = isDemand ? "rgba(38, 166, 154, 0.75)" : "rgba(239, 83, 80, 0.75)";
+        context.strokeStyle = colors.stroke;
         context.lineWidth = 1;
         context.strokeRect(left, top, width, height);
-        context.fillStyle = isDemand ? "#26a69a" : "#ef5350";
-        context.font = "12px sans-serif";
-        context.fillText(`${zone.sourceTimeframe} ${zone.pattern} ${zone.type}`, left + 6, top + 14);
+        context.restore();
       }
     });
   }

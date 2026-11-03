@@ -12,8 +12,8 @@
     "databasePath": "data/supplyndemand.db",
     "longHistoryTimeframes": ["Y", "HY", "Q", "M"],
     "longHistoryMode": "max",
-    "dailyHistoryYears": 2,
-    "weeklyHistoryYears": 2
+"dailyHistoryYears": 10,
+"weeklyHistoryYears": 20
   },
   "seed": {
     "nifty50Path": "config/nifty50.json"

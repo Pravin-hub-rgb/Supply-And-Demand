@@ -38,4 +38,15 @@ zone patterns -
 - how we mark the zone
     - for RBR, DBR - we find the highest close/open of the bases like if we have 3 base so the highest close/open of the bases candles we mark it then lowest wick point of those bases for example in the MARUTI case we will mark from close of 2021 yearly candle to the lowest wick point that will be low of 2020
     - these zone shouldn't be breached too .. these should always be fresh.
+- do not use the currently forming candle for zone creation; wait for candle close.
     - ummm the wicks of the strong candle can also be use for marking
+
+- color zones
+-okay now we will do this
+change the color of stuff okay
+so year supply and demand zone will be cyan 
+half year S and D will be both brinjal color that eggplant one
+then quarterly demand will be dark green and supply will be dark blue 
+monthly D will be yellow and S will be orange
+weekly D will be light green and S will be red
+Daily D will be purple and S will be gray
