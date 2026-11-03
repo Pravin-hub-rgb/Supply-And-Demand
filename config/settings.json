@@ -1,0 +1,29 @@
+{
+  "app": {
+    "name": "SupplynDemand",
+    "timeframes": ["Y", "HY", "Q", "M", "W", "D"]
+  },
+  "server": {
+    "frontendPort": 3005,
+    "backendPort": 8011,
+    "backendHost": "127.0.0.1"
+  },
+  "data": {
+    "databasePath": "data/supplyndemand.db",
+    "longHistoryTimeframes": ["Y", "HY", "Q", "M"],
+    "longHistoryMode": "max",
+    "dailyHistoryYears": 2,
+    "weeklyHistoryYears": 2
+  },
+  "seed": {
+    "nifty50Path": "config/nifty50.json"
+  },
+  "download": {
+    "pacingSeconds": 0.3,
+    "requestTimeoutSeconds": 30,
+    "retryAttempts": 3,
+    "initialCooldownSeconds": 30,
+    "maxCooldownSeconds": 300,
+    "maxAttemptsPerRequest": 12
+  }
+}
