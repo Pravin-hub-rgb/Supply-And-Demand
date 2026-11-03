@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Instrument } from "../lib/types";
 
 interface Props {
@@ -21,6 +21,28 @@ export default function StockSidebar({ instruments, selectedSymbol, onSelect }: 
         .includes(needle),
     );
   }, [instruments, query]);
+
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      const target = event.target as HTMLElement | null;
+      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) return;
+      if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+      if (filtered.length === 0) return;
+      event.preventDefault();
+      const currentIndex = filtered.findIndex((instrument) => instrument.symbol === selectedSymbol);
+      const nextIndex =
+        event.key === "ArrowDown"
+          ? currentIndex < 0
+            ? 0
+            : Math.min(currentIndex + 1, filtered.length - 1)
+          : currentIndex < 0
+            ? filtered.length - 1
+            : Math.max(currentIndex - 1, 0);
+      onSelect(filtered[nextIndex].symbol);
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [filtered, selectedSymbol, onSelect]);
 
   return (
     <aside className="sidebar" aria-label="Nifty 50 stocks">

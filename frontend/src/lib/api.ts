@@ -1,4 +1,4 @@
-import type { CandlesResponse, Instrument, Timeframe } from "./types";
+import type { CandleClass, CandleClassesResponse, CandlesResponse, DetectedZone, Instrument, Timeframe, ZonesResponse } from "./types";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "http://127.0.0.1:8011";
 
@@ -34,4 +34,14 @@ export async function getInstruments(): Promise<Instrument[]> {
 export async function getCandles(symbol: string, timeframe: Timeframe): Promise<CandlesResponse> {
   const response = await fetch(`${API_BASE}/api/candles/${encodeURIComponent(symbol)}?timeframe=${timeframe}`, { cache: "no-store" });
   return readJson<CandlesResponse>(response);
+}
+
+export async function getZones(symbol: string, timeframe: Timeframe = "Y"): Promise<ZonesResponse> {
+  const response = await fetch(`${API_BASE}/api/zones/${encodeURIComponent(symbol)}?timeframe=${timeframe}`, { cache: "no-store" });
+  return readJson<ZonesResponse>(response);
+}
+
+export async function getCandleClasses(symbol: string, timeframe: Timeframe): Promise<CandleClassesResponse> {
+  const response = await fetch(`${API_BASE}/api/candle-classes/${encodeURIComponent(symbol)}?timeframe=${timeframe}`, { cache: "no-store" });
+  return readJson<CandleClassesResponse>(response);
 }

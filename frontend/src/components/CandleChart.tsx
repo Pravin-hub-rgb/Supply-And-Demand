@@ -6,12 +6,17 @@ import {
   ColorType,
   CrosshairMode,
   createChart,
+  createSeriesMarkers,
   type IChartApi,
   type IRange,
   type ISeriesApi,
+  type ISeriesMarkersPluginApi,
+  type SeriesMarker,
   type Time,
 } from "lightweight-charts";
-import type { Candle, Timeframe } from "../lib/types";
+import type { Candle, CandleClass, ChartZone, Timeframe } from "../lib/types";
+import type { DetectedZone } from "../lib/types";
+import { ZoneRectanglesPrimitive } from "../lib/zoneRectangles";
 import type { ChartMemory } from "../lib/chartMemory";
 
 interface Ohlcv {
@@ -66,9 +71,11 @@ interface Props {
   timeframe: Timeframe;
   symbol: string;
   memory: ChartMemory;
+  zones?: ChartZone[];
+  candleClasses?: CandleClass[];
 }
 
-export default function CandleChart({ candles, timeframe, symbol, memory }: Props) {
+export default function CandleChart({ candles, timeframe, symbol, memory, zones, candleClasses }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<"Candlestick"> | null>(null);
@@ -76,6 +83,8 @@ export default function CandleChart({ candles, timeframe, symbol, memory }: Prop
   const hasDataRef = useRef(false);
   const candleByTimeRef = useRef<Map<string, Ohlcv>>(new Map());
   const lastOhlcvRef = useRef<Ohlcv | null>(null);
+  const zonePrimitiveRef = useRef<ZoneRectanglesPrimitive | null>(null);
+  const markersPluginRef = useRef<ISeriesMarkersPluginApi<Time> | null>(null);
   const [ohlcv, setOhlcv] = useState<Ohlcv | null>(null);
 
   useEffect(() => {
@@ -86,7 +95,7 @@ export default function CandleChart({ candles, timeframe, symbol, memory }: Prop
       width: container.clientWidth,
       height: container.clientHeight,
       layout: {
-        background: { type: ColorType.Solid, color: "#0d1117" },
+        background: { type: ColorType.Solid, color: "#000000" },
         textColor: "#8b98ab",
       },
       grid: {
@@ -98,7 +107,7 @@ export default function CandleChart({ candles, timeframe, symbol, memory }: Prop
       timeScale: { borderColor: "#1f2a3d" },
     });
     chartRef.current = chart;
-    seriesRef.current = chart.addSeries(CandlestickSeries, {
+    const series = chart.addSeries(CandlestickSeries, {
       upColor: "#26a69a",
       downColor: "#ef5350",
       borderUpColor: "#26a69a",
@@ -106,6 +115,14 @@ export default function CandleChart({ candles, timeframe, symbol, memory }: Prop
       wickUpColor: "#26a69a",
       wickDownColor: "#ef5350",
     });
+    seriesRef.current = series;
+
+    const primitive = new ZoneRectanglesPrimitive();
+    series.attachPrimitive(primitive);
+    zonePrimitiveRef.current = primitive;
+    primitive.setZones(zones ?? []);
+
+    markersPluginRef.current = createSeriesMarkers(series, []);
 
     chart.subscribeCrosshairMove((param) => {
       const key = param.time ? timeKey(param.time) : null;
@@ -118,6 +135,11 @@ export default function CandleChart({ candles, timeframe, symbol, memory }: Prop
     });
     resizeObserver.observe(container);
     return () => {
+      if (seriesRef.current && zonePrimitiveRef.current) {
+        seriesRef.current.detachPrimitive(zonePrimitiveRef.current);
+      }
+      zonePrimitiveRef.current = null;
+      markersPluginRef.current = null;
       resizeObserver.disconnect();
       chart.remove();
       chartRef.current = null;
@@ -125,6 +147,24 @@ export default function CandleChart({ candles, timeframe, symbol, memory }: Prop
       hasDataRef.current = false;
     };
   }, []);
+
+  useEffect(() => {
+    zonePrimitiveRef.current?.setZones(zones ?? []);
+  }, [zones]);
+
+  useEffect(() => {
+    if (!markersPluginRef.current) return;
+    const markers: SeriesMarker<Time>[] = (candleClasses ?? [])
+      .filter((item) => item.strong || item.base)
+      .map((item) => ({
+        time: toBusinessDay(item.time) as Time,
+        position: "belowBar",
+        color: item.strong ? "#26a69a" : "#facc15",
+        shape: item.strong ? "arrowUp" : "circle",
+        text: item.strong ? "S" : "B",
+      }));
+    markersPluginRef.current.setMarkers(markers);
+  }, [candleClasses]);
 
   useEffect(() => {
     const chart = chartRef.current;
