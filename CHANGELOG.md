@@ -2,6 +2,12 @@
 
 All notable user-visible changes are recorded here.
 
+## 0.3.0 - 2026-11-03
+
+- Added the Next.js frontend for phase 1 charts at `/charts`: Nifty 50 sidebar, search, timeframe switch, and candlestick rendering through `lightweight-charts`.
+- Added frontend setup/build commands to the README and runbook.
+- Excluded the local reference PDF from git; source/docs/config remain committed.
+
 ## 0.2.0 - 2026-11-03
 
 - Added the FastAPI backend package with local SQLite cache and health/instruments/candles endpoints.

@@ -16,7 +16,9 @@ SupplynDemand is a local single-user study app for Nifty 50 supply and demand.
 4. Backend serves timeframes:
    - Native: D, W, M
    - Derived from monthly candles: Q, HY, Y
-5. Frontend renders candlestick charts with `lightweight-charts`.
+5. Next.js frontend renders candlestick charts with `lightweight-charts` at `/charts`.
+   - `/` redirects to `/charts`.
+   - Client-side fetching calls the backend directly with `NEXT_PUBLIC_API_BASE` or `http://127.0.0.1:8011`.
 
 ## Module boundaries
 
@@ -28,6 +30,9 @@ SupplynDemand is a local single-user study app for Nifty 50 supply and demand.
 - `supplyndemand.repository` owns SQL reads/writes.
 - `supplyndemand.downloader` orchestrates seeded downloads and reports failures.
 - `supplyndemand.api` exposes local HTTP routes; business logic stays in modules.
+- `frontend/src/lib/api.ts` is the browser API client with timeout-free fetch and explicit API errors.
+- `frontend/src/components/CandleChart.tsx` owns chart creation/removal and resize handling.
+- `frontend/src/components/StockSidebar.tsx` and `TimeframeSwitch.tsx` own list and timeframe UI.
 - Frontend renders UI and does not compute market data.
 
 ## Runtime storage
@@ -38,5 +43,4 @@ SupplynDemand is a local single-user study app for Nifty 50 supply and demand.
 
 ## Not implemented yet
 
-- Next.js frontend
 - Scanner / zones / live data

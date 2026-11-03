@@ -42,6 +42,16 @@ Reason: StocksSS proved per-token pacing and 429 cooldowns are needed for large 
 
 Reason: D/W are limited to 2 years by policy. The downloader deletes D/W candles older than the configured window before reinsert, so changing `dailyHistoryYears` or `weeklyHistoryYears` does not leave stale older rows. Monthly full history is upserted and retained.
 
+## 2026-11-03 - Frontend stays client-side and leans on lightweight-charts
+
+Options considered: server-side data fetching with Next.js route handlers, a full-stack framework, or a client-side Next.js UI calling FastAPI directly.
+Reason: the app is local single-user. Client-side fetching keeps the backend responsible for market data and SQLite access, avoids duplicating business logic in Next.js, and matches the simple browser/API split. `lightweight-charts` is already used in the user's other projects and is enough for candlesticks without MUI/Tailwind/chart bloat.
+
+## 2026-11-03 - Exclude copyrighted reference PDFs from git
+
+Options considered: commit the supplied PDF, gitignore the exact file, or keep it elsewhere.
+Reason: the PDF looks like paid course material and is not needed for the app to build or run. The exact file is gitignored; code and docs remain committed.
+
 ## 2026-11-03 - No auth in phase 1
 
 Reason: local single-user tool. Bind backend and CORS to localhost only. Add auth only if exposure beyond localhost is ever needed.

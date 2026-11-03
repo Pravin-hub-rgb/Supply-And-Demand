@@ -47,6 +47,17 @@ Health check:
 curl http://127.0.0.1:8011/api/health
 ```
 
+### Run the frontend
+
+In another terminal:
+
+```powershell
+Set-Location frontend
+bun run dev
+```
+
+Open `http://localhost:3005/charts`. The frontend reads `NEXT_PUBLIC_API_BASE` if set, otherwise defaults to `http://127.0.0.1:8011`.
+
 ### Upstox token expired
 
 Generate a fresh token and paste it into `.env.local`. Do not commit or share it. Remove or replace dead `UPSTOX_ACCESS_TOKEN*` entries; the downloader will treat `401` tokens as dead for that run.
@@ -59,6 +70,12 @@ Backend test command:
 .\.venv\Scripts\python.exe -m pytest tests/python
 ```
 
-Last verified: 20 passed.
+Frontend verification command:
 
-Manual checks still to do after frontend exists: D/W/M/Q/HY/Y charts in the browser.
+```powershell
+Set-Location frontend
+bun run build
+Set-Location ..
+```
+
+Last verified: backend suite 20 passed; frontend production build succeeded. Browser chart checks for D/W/M/Q/HY/Y are still pending.

@@ -2,7 +2,7 @@
 
 A local web app for studying Nifty 50 supply and demand on higher timeframes.
 
-Current status: **backend data pipeline implemented and cache built**. The frontend is not implemented yet.
+Current status: **backend cache built and phase 1 frontend implemented**. No supply/demand scanner or live data yet.
 
 Upstox historical candles are verified working with all configured tokens. Upstox candles are treated as already adjusted for split/bonus events based on KOTAKBANK and TRENT ex-date validation; the app will not apply a second adjustment.
 
@@ -39,18 +39,25 @@ docs/       Architecture, decisions, operations
 scripts/    Data preparation tools, not app logic
 tests/      All tests live here
 backend/    FastAPI backend package and requirements
-frontend/   Next.js frontend, added in a later step
+frontend/   Next.js charts frontend
 data/       Runtime SQLite cache, git-ignored
 ```
 
 ## Setup
 
-1. Copy the environment template if you need a fresh file:
+1. Install frontend dependencies:
+   ```powershell
+   Set-Location frontend
+   bun install
+   Set-Location ..
+   ```
+
+2. Copy the environment template if you need a fresh file:
    ```powershell
    Copy-Item .env.example .env.local
    ```
 
-2. Paste Upstox tokens into `.env.local`:
+3. Paste Upstox tokens into `.env.local`:
    ```
    UPSTOX_ACCESS_TOKEN=...
    UPSTOX_ACCESS_TOKEN_2=...
@@ -59,18 +66,18 @@ data/       Runtime SQLite cache, git-ignored
    ```
    Extra tokens are optional. The downloader round-robins available tokens.
 
-3. Create the Python virtual environment and install backend deps:
+4. Create the Python virtual environment and install backend deps:
    ```powershell
    python -m venv .venv
    .\.venv\Scripts\python.exe -m pip install -r backend\requirements-dev.txt
    ```
 
-4. Build or refresh the Nifty 50 seed if NSE constituents changed:
+5. Build or refresh the Nifty 50 seed if NSE constituents changed:
    ```powershell
    python scripts/build_nifty50_seed.py
    ```
 
-5. Download/build the local candle cache:
+6. Download/build the local candle cache:
    ```powershell
    .\.venv\Scripts\python.exe scripts/download_data.py
    ```
@@ -90,10 +97,24 @@ curl http://127.0.0.1:8011/api/health
 curl "http://127.0.0.1:8011/api/candles/RELIANCE?timeframe=M"
 ```
 
+## Run the frontend
+
+In a second terminal:
+
+```powershell
+Set-Location frontend
+bun run dev
+```
+
+Open `http://localhost:3005/charts`. The frontend expects the backend at `http://127.0.0.1:8011`; override with `NEXT_PUBLIC_API_BASE` if needed.
+
 ## Test
 
 ```powershell
 .\.venv\Scripts\python.exe -m pytest tests/python
+Set-Location frontend
+bun run build
+Set-Location ..
 ```
 
 ## Troubleshooting
