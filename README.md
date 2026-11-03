@@ -83,35 +83,40 @@ data/       Runtime SQLite cache, git-ignored
    ```
    Use `--symbol RELIANCE` to refresh one symbol. Failures are printed and make the script exit non-zero; successful candles are still upserted.
 
-## Run the backend
+## Run the app
+
+From the repository root:
 
 ```powershell
-$env:PYTHONPATH = 'backend/src'
-.\.venv\Scripts\python.exe -m uvicorn supplyndemand.main:app --app-dir backend/src --host 127.0.0.1 --port 8011
+bun dev
 ```
 
-Check it:
+This starts both processes:
 
-```powershell
-curl http://127.0.0.1:8011/api/health
-curl "http://127.0.0.1:8011/api/candles/RELIANCE?timeframe=M"
-```
-
-## Run the frontend
-
-In a second terminal:
-
-```powershell
-Set-Location frontend
-bun run dev
-```
+- Backend API: `http://127.0.0.1:8011`
+- Frontend: `http://localhost:3005`
 
 Open `http://localhost:3005/charts`. The frontend expects the backend at `http://127.0.0.1:8011`; override with `NEXT_PUBLIC_API_BASE` if needed.
+
+Useful variants:
+
+```powershell
+bun run check    # verify local prerequisites and ports without starting servers
+bun dev -- --kill # stop processes already listening on 3005/8011, then start both
+bun start         # frontend production server + backend
+```
+
+For individual debugging, the backend can still be started directly:
+
+```powershell
+.\.venv\Scripts\python.exe -m uvicorn supplyndemand.main:app --app-dir backend/src --host 127.0.0.1 --port 8011
+```
 
 ## Test
 
 ```powershell
 .\.venv\Scripts\python.exe -m pytest tests/python
+bun run check
 Set-Location frontend
 bun run build
 Set-Location ..
@@ -119,6 +124,7 @@ Set-Location ..
 
 ## Troubleshooting
 
+- `bun dev` says a port is in use: close the process yourself, or run `bun dev -- --kill` to stop the PID(s) on 3005/8011 first.
 - Historical downloads fail immediately: check `UPSTOX_ACCESS_TOKEN` in `.env.local`. Tokens expire; generate fresh ones when needed.
 - `403 Cloudflare` from raw `urllib`: use `requests` (the backend does); do not spoof browser signatures.
 - `429 rate limited`: the downloader marks that token as cooling and uses the others; wait for cooldown if all tokens are limited.

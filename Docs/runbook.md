@@ -34,10 +34,27 @@ Behavior:
 - Tokens: `UPSTOX_ACCESS_TOKEN` plus optional `UPSTOX_ACCESS_TOKEN_2..N`. Tokens are round-robined; `429` cools down that token exponentially; `401` marks it dead.
 - Failures are listed and make the command exit non-zero. Partial successful candles are kept.
 
-### Run the backend API
+### Run the app
+
+From the repository root:
 
 ```powershell
-$env:PYTHONPATH = 'backend/src'
+bun dev
+```
+
+This starts both the backend (`http://127.0.0.1:8011`) and frontend (`http://localhost:3005`).
+
+Useful variants:
+
+```powershell
+bun run check     # verify prerequisites and ports without starting servers
+bun dev -- --kill # stop PID(s) already listening on 3005/8011, then start
+bun start         # frontend production server + backend
+```
+
+For individual debugging, start the backend directly:
+
+```powershell
 .\.venv\Scripts\python.exe -m uvicorn supplyndemand.main:app --app-dir backend/src --host 127.0.0.1 --port 8011
 ```
 
@@ -46,17 +63,6 @@ Health check:
 ```powershell
 curl http://127.0.0.1:8011/api/health
 ```
-
-### Run the frontend
-
-In another terminal:
-
-```powershell
-Set-Location frontend
-bun run dev
-```
-
-Open `http://localhost:3005/charts`. The frontend reads `NEXT_PUBLIC_API_BASE` if set, otherwise defaults to `http://127.0.0.1:8011`.
 
 ### Upstox token expired
 
@@ -73,9 +79,10 @@ Backend test command:
 Frontend verification command:
 
 ```powershell
+bun run check
 Set-Location frontend
 bun run build
 Set-Location ..
 ```
 
-Last verified: backend suite 20 passed; frontend production build succeeded. Browser chart checks for D/W/M/Q/HY/Y are still pending.
+Last verified: backend suite 20 passed; frontend production build succeeded; `bun run check` reported both ports available. Browser chart checks for D/W/M/Q/HY/Y are still pending.

@@ -52,6 +52,11 @@ Reason: the app is local single-user. Client-side fetching keeps the backend res
 Options considered: commit the supplied PDF, gitignore the exact file, or keep it elsewhere.
 Reason: the PDF looks like paid course material and is not needed for the app to build or run. The exact file is gitignored; code and docs remain committed.
 
+## 2026-11-03 - Root `bun dev` orchestrates both apps, but does not force-kill by default
+
+Options considered: copy TradeStack's `concurrently`/`killPort` behavior exactly, add a root package with npm scripts, or use Node built-ins with explicit opt-in kill.
+Reason: `bun dev` should start backend and frontend together like TradeStack. The root orchestrator uses Node built-ins (no new dependency) and, by default, refuses to start if ports 3005/8011 are occupied and prints the PIDs. A separate explicit `bun dev -- --kill` stops those local PIDs first. This preserves the TradeStack workflow without force-killing processes unexpectedly.
+
 ## 2026-11-03 - No auth in phase 1
 
 Reason: local single-user tool. Bind backend and CORS to localhost only. Add auth only if exposure beyond localhost is ever needed.

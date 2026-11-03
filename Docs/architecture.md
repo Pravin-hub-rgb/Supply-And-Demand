@@ -2,6 +2,11 @@
 
 SupplynDemand is a local single-user study app for Nifty 50 supply and demand.
 
+## Local run model
+
+- Root `bun dev` runs `dev.js`, which spawns the backend uvicorn process and the frontend Next.js process with prefixed output.
+- By default it does not kill processes using ports 3005/8011; it reports PIDs and exits. `bun dev -- --kill` is explicit opt-in for local cleanup.
+
 ## Phase 1 data flow
 
 1. `scripts/build_nifty50_seed.py`

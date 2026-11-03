@@ -2,6 +2,11 @@
 
 All notable user-visible changes are recorded here.
 
+## 0.4.0 - 2026-11-03
+
+- Added a root `bun dev` launcher that starts the backend API and frontend together.
+- Added `bun run check` to verify prerequisites and ports without starting servers, and `bun dev -- --kill` for explicit local port cleanup.
+
 ## 0.3.0 - 2026-11-03
 
 - Added the Next.js frontend for phase 1 charts at `/charts`: Nifty 50 sidebar, search, timeframe switch, and candlestick rendering through `lightweight-charts`.

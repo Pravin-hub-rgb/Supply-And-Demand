@@ -1,0 +1,11 @@
+{
+  "name": "supplyndemand",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "node dev.js",
+    "start": "node dev.js --prod",
+    "check": "node dev.js --check",
+    "build": "cd frontend && bun run build"
+  }
+}
