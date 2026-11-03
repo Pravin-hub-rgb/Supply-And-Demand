@@ -59,6 +59,14 @@ def test_aggregate_yearly_uses_calendar_years():
     assert (candle.time, candle.open, candle.close, candle.volume) == ("2025-01-01", 100, 225, 15000)
 
 
+def test_aggregate_native_timeframes_pass_through():
+    candles = [Candle("2026-01-01", 10, 12, 9, 11, 100)]
+
+    assert aggregate_to_timeframe(candles, "D") == candles
+    assert aggregate_to_timeframe(candles, "W") == candles
+    assert aggregate_to_timeframe(candles, "M") == candles
+
+
 def test_period_start_rejects_unknown_timeframe():
     with pytest.raises(ValueError):
         period_start("2025-01-01", "Z")

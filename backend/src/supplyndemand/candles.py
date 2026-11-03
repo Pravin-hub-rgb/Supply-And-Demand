@@ -57,7 +57,7 @@ def aggregate_monthly(candles: list[Candle], timeframe: str) -> list[Candle]:
 
 
 def aggregate_to_timeframe(candles: list[Candle], timeframe: str) -> list[Candle]:
-    if timeframe == "M":
+    if timeframe in NATIVE_TIMEFRAMES:
         return list(candles)
     if timeframe in DERIVED_TIMEFRAMES:
         return aggregate_monthly(candles, timeframe)
