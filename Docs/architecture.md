@@ -33,7 +33,8 @@ SupplynDemand is a local single-user study app for Nifty 50 supply and demand.
 - `supplyndemand.rate_limit` owns token round-robin, pacing, cooldowns, and dead-token detection.
 - `supplyndemand.candles` owns parsing and calendar aggregation.
 - `supplyndemand.repository` owns SQL reads/writes.
-- `supplyndemand.downloader` orchestrates seeded downloads and reports failures.
+- `supplyndemand.zones` detects yearly supply/demand patterns and freshness.
+- `frontend/src/lib/zoneRectangles.ts` renders detected yearly zones as chart rectangles.
 - `supplyndemand.api` exposes local HTTP routes; business logic stays in modules.
 - `frontend/src/lib/api.ts` is the browser API client with timeout-free fetch and explicit API errors.
 - `frontend/src/components/CandleChart.tsx` owns chart creation/removal, resize handling, session-visible logical-range restore, and the OHLCV hover overlay.

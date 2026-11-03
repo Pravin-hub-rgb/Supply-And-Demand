@@ -2,6 +2,22 @@
 
 All notable user-visible changes are recorded here.
 
+## 0.9.0 - 2026-11-03
+
+- Extended strong/base candle markers to all timeframes.
+- Extended supply/demand zone detection and rectangle rendering to all timeframes.
+
+## 0.8.0 - 2026-11-03
+
+- Added backend candle classification (`/api/candle-classes`) using the current strong/base candle rules.
+- Added green arrow markers for strong candles and yellow circle markers for base candles on yearly and monthly charts.
+
+## 0.7.0 - 2026-11-03
+
+- Added automatic yearly supply/demand zone detection from yearly candles, including RBR, DBR, RBD, and DBD patterns.
+- Added `/api/zones/{symbol}?timeframe=Y`, returning the nearest fresh demand and supply zones.
+- Drew detected yearly zones as rectangles on the yearly chart only, extending from the base candle to the right edge.
+
 ## 0.6.0 - 2026-11-03
 
 - Added a top-left OHLCV overlay to the chart, updated from candle hover and defaulting to the latest candle.

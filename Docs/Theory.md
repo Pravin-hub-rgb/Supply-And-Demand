@@ -4,19 +4,19 @@
 what are strong candle?
 - these are the big candle whose body is big and smaller wicks ... big candle.
 
-zone patterns
-- RBR - rally base rally
-    - here the patterns are like first we have rally which is buying strong candle
-    - then we have base candles like smaller one these can me many like max upto 7 
-    - then we have again rally again a strong candle
-- DBR - drop base rally
-    - here we have selling strong candle called drop 
-    - then we have base candles like sammler on these can be manly like max upto 7
-    - then we have Rally candle buying strong candle
-- DBD - Drop then bases then again Drop
-- RBD - Rally then bases then Drop
-
-we will be marking these fresh .. like these shouldn't be touched by the price yet .. 
+zone patterns - 
+- Demand zone
+    - RBR - rally base rally
+        - here the patterns are like first we have rally which is buying strong candle
+        - then we have base candles like smaller one these can me many like max upto 7 
+        - then we have again rally again a strong candle
+    - DBR - drop base rally
+        - here we have selling strong candle called drop 
+        - then we have base candles like sammler on these can be manly like max upto 7
+        - then we have Rally candle buying strong candle
+- Supply Zone
+    - DBD - Drop then bases then again Drop
+    - RBD - Rally then bases then Drop
 
 - few examples of these points time frame yearly only
     - for the GRASIM
@@ -38,3 +38,4 @@ we will be marking these fresh .. like these shouldn't be touched by the price y
 - how we mark the zone
     - for RBR, DBR - we find the highest close/open of the bases like if we have 3 base so the highest close/open of the bases candles we mark it then lowest wick point of those bases for example in the MARUTI case we will mark from close of 2021 yearly candle to the lowest wick point that will be low of 2020
     - these zone shouldn't be breached too .. these should always be fresh.
+    - ummm the wicks of the strong candle can also be use for marking
